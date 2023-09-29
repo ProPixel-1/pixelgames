@@ -1,0 +1,156 @@
+# Sample workflow for building and deploying a mdBook site to GitHub Pages
+#
+# To get started with mdBook see: https://rust-lang.github.io/mdBook/index.html
+#
+name: Deploy mdBook site to Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    env:
+      MDBOOK_VERSION: 0.4.21
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install mdBook
+        run: |
+          curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf -y | sh
+          rustup update
+          cargo install --version ${MDBOOK_VERSION} mdbook
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v3
+      - name: Build with mdBook
+        run: mdbook build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./book
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    <head:
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie clicker</title>
+
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link rel="stylesheet" href="./css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+
+    <div class="info">
+        <h1>Cookie clicker v2.0 BETA</h1>
+        <h2>Made by <span>Wellmare</span></h2>
+    </div>
+
+    <div class="game">
+
+        <div class="cookie-wrapper">
+            <h2>Cookies: <strong><span id="cookie-counter">0</span></strong></h2>
+
+            <div class="button" id="button">
+                <img src="./img/biscuit-clip-art-43.png" alt="cookie" class="cookie">
+            </div>
+        </div>
+
+        <div class="info-game">
+
+            <h3>You are getting: <strong><span id="cookie-per-sec">0</span></strong> per second</h3>
+            <h3>You are getting: <strong><span id="cookie-per-click">1</span></strong> per click</h3>
+
+        </div>
+
+        <div class="btns-upgrade">
+            <div class="buttons-upgrades">
+                <div class="button-upgrade" id="per-click">
+                    <h4 class="button-name">Cookie Per Click</h4>
+                    <h5 class="price-to-user-value">Price to <span class="user-value-upgrade">5</span> Upgrades:
+                        <span class="price-user">125</span> Cookies
+                    </h5>
+                    <div class="buttons-wrapper">
+                        <div class="tabs-counts">
+                            <div class="tab-count tab-count-per-click active">1</div>
+                            <div class="tab-count tab-count-per-click">5</div>
+                            <div class="tab-count tab-count-per-click">10</div>
+                            <div class="tab-count tab-count-per-click">MAX</div>
+                        </div>
+                        <div class="button-buy">BUY</div>
+
+                    </div>
+                    <h5 class="price-to-1">Price to 1 Upgrade: <span class="price-1">25</span> Cookies</h5>
+                </div>
+
+                <div class="button-upgrade" id="per-sec">
+                    <h4 class="button-name">Cookie Per Second</h4>
+                    <h5 class="price-to-user-value">Price to <span class="user-value-upgrade">5</span> Upgrades:
+                        <span class="price-user">250</span> Cookies
+                    </h5>
+                    <div class="buttons-wrapper">
+                        <div class="tabs-counts">
+                            <div class="tab-count tab-count-per-sec active">1</div>
+                            <div class="tab-count tab-count-per-sec">5</div>
+                            <div class="tab-count tab-count-per-sec">10</div>
+                            <div class="tab-count tab-count-per-sec">MAX</div>
+                        </div>
+                        <div class="button-buy">BUY</div>
+
+                    </div>
+                    <h5 class="price-to-1">Price to 1 Upgrade: <span class="price-1">50</span> Cookies</h5>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="reset-data-wrapper">
+            <a class="reset-data">Reset data</a>
+        </div>
+
+    </div>
+
+
+
+    <script src="js/newScript.js"></script>
+
+</body>
+
+</html>
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
